@@ -28,7 +28,7 @@ class TestContributionsGuard(object):
     def setUp(self):
         sentinel = Sentinel(settings_test.REDIS_SENTINEL)
         db = getattr(settings_test, 'REDIS_DB', 0)
-        self.connection = sentinel.master_for('mymaster', db=db)
+        self.connection = sentinel.master_for('redis-master', db=db)
         self.connection.flushall()
         self.guard = ContributionsGuard(self.connection)
         self.anon_user = {'user_id': None, 'user_ip': '127.0.0.1'}

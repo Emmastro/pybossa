@@ -32,7 +32,7 @@ class Sentinel(object):
         socket_timeout = app.config.get('REDIS_SOCKET_TIMEOUT', None)
         retry_on_timeout = app.config.get('REDIS_RETRY_ON_TIMEOUT', True)
         redis_db = app.config.get('REDIS_DB', 0)
-        redis_master = app.config.get('REDIS_MASTER', 'mymaster')
+        redis_master = app.config.get('REDIS_MASTER', 'redis-master')
         if app.config.get('REDIS_SENTINEL'):
             self.connection = sentinel.Sentinel(app.config['REDIS_SENTINEL'],
                                                 socket_timeout=socket_timeout,

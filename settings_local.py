@@ -15,80 +15,98 @@
 #
 # You should have received a copy of the GNU Affero General Public License
 # along with PyBossa.  If not, see <http://www.gnu.org/licenses/>.
+import logging
+import os
 
-# DEBUG = False
+from dotenv import load_dotenv
 
-## host for local development
-# HOST = '0.0.0.0'
+load_dotenv()
 
-## use SERVER_NAME instead of HOST for production environment with real URLs
+DEBUG = (os.getenv('DEBUG', 'False') == 'True')
+
+# host for local development
+HOST = os.environ.get('HOST', '0.0.0.0')
+
+# use SERVER_NAME instead of HOST for production environment with real URLs
 # SERVER_NAME = 'somecoolurl.com'
 
-## PORT used for local development, in production environment let nginx handle this
-# PORT = 5000
+# PORT used for local development, in production environment let nginx handle this
+PORT = os.environ.get('PORT', 5000)
 
-SECRET = 'foobar'
-SECRET_KEY = 'my-session-secret'
+SECRET = os.environ.get('SECRET', 'foobar')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'my-session-secret')
 
-SQLALCHEMY_DATABASE_URI = 'postgresql://pybossa:tester@localhost/pybossa'
+POSTGRES_USER = os.environ.get('POSTGRES_USER', 'pybossa')
+POSTGRES_PASSWORD = os.environ.get('POSTGRES_PASSWORD', 'pybossa')
+DB_HOST = os.environ.get('DB_HOST', '0.0.0.0')
+POSTGRES_DB = os.environ.get('POSTGRES_DB', 'pybossa')
 
-##Slave configuration for DB
-#SQLALCHEMY_BINDS = {
+
+SQLALCHEMY_DATABASE_URI = os.environ.get(
+    'SQLALCHEMY_DATABASE_URI', f'postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{DB_HOST}/{POSTGRES_DB}')
+
+# Slave configuration for DB
+# SQLALCHEMY_BINDS = {
 #    'slave': 'postgresql://user:password@server/db'
-#}
+# }
 
-ITSDANGEROUSKEY = 'its-dangerous-key'
+ITSDANGEROUSKEY = os.environ.get('ITSDANGEROUSKEY', 'its-dangerous-key')
 
-## project configuration
-BRAND = 'PyBossa'
-TITLE = 'PyBossa'
-LOGO = 'default_logo.svg'
-COPYRIGHT = 'Set Your Institution'
-DESCRIPTION = 'Set the description in your config'
-TERMSOFUSE = 'http://okfn.org/terms-of-use/'
-DATAUSE = 'http://opendatacommons.org/licenses/by/'
-CONTACT_EMAIL = 'info@pybossa.com'
-CONTACT_TWITTER = 'PyBossa'
+# project configuration
+BRAND = os.environ.get('BRAND', 'PyBossa')
+TITLE = os.environ.get('TITLE', 'PyBossa')
+LOGO = os.environ.get('LOGO', 'default_logo.svg')
+COPYRIGHT = os.environ.get('COPYRIGHT', 'Set Your Institution')
+DESCRIPTION = os.environ.get(
+    'DESCRIPTION', 'Set the description in your config')
+TERMSOFUSE = os.environ.get('TERMSOFUSE', 'http://okfn.org/terms-of-use/')
+DATAUSE = os.environ.get('DATAUSE', 'http://opendatacommons.org/licenses/by/')
+CONTACT_EMAIL = os.environ.get('CONTACT_EMAIL', 'info@pybossa.com')
+CONTACT_TWITTER = os.environ.get('CONTACT_TWITTER', 'PyBossa')
 
-## Default number of projects per page
-## APPS_PER_PAGE = 20
+# Default number of projects per page
+APPS_PER_PAGE = os.environ.get('APPS_PER_PAGE', 20)
 
-## External Auth providers
-# TWITTER_CONSUMER_KEY=''
-# TWITTER_CONSUMER_SECRET=''
-# FACEBOOK_APP_ID=''
-# FACEBOOK_APP_SECRET=''
-# GOOGLE_CLIENT_ID=''
-# GOOGLE_CLIENT_SECRET=''
+# External Auth providers
 
-## Supported Languages
-## NOTE: You need to create a symbolic link to the translations folder, otherwise
-## this wont work.
-## ln -s pybossa/themes/your-theme/translations pybossa/translations
-#DEFAULT_LOCALE = 'en'
-#LOCALES = [('en', 'English'), ('es', u'Español'),
-#           ('it', 'Italiano'), ('fr', u'Français'),
-#           ('ja', u'日本語'),('pt_BR','Brazilian Portuguese')]
+TWITTER_CONSUMER_KEY = os.environ.get('TWITTER_CONSUMER_KEY', '')
+TWITTER_CONSUMER_SECRET = os.environ.get('TWITTER_CONSUMER_SECRET', '')
+FACEBOOK_APP_ID = os.environ.get('FACEBOOK_APP_ID', '')
+FACEBOOK_APP_SECRET = os.environ.get('FACEBOOK_APP_SECRET', '')
+GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', '')
+GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET', '')
 
 
-## list of administrator emails to which error emails get sent
-# ADMINS = ['me@sysadmin.org']
+# Supported Languages
 
-## CKAN URL for API calls
-#CKAN_NAME = "Demo CKAN server"
-#CKAN_URL = "http://demo.ckan.org"
+DEFAULT_LOCALE = 'en'
+LOCALES = [('en', 'English'), ('es', u'Español'),
+           ('it', 'Italiano'), ('fr', u'Français'),
+           ('ja', u'日本語'), ('pt_BR', 'Brazilian Portuguese')]
 
 
-## logging config
+# list of administrator emails to which error emails get sent. On .env, you can set this as a comma separated list
+ADMINS = [os.environ.get('ADMINS', '').split(',')]
+
+# CKAN URL for API calls
+
+
+CKAN_NAME = os.environ.get('CKAN_NAME', "Demo CKAN server")
+CKAN_URL = os.environ.get('CKAN_URL', "http://demo.ckan.org")
+
+
+# logging config
 # Sentry configuration
-# SENTRY_DSN=''
-## set path to enable
-# LOG_FILE = '/path/to/log/file'
-## Optional log level
-# import logging
-# LOG_LEVEL = logging.DEBUG
+SENTRY_DSN = os.environ.get('SENTRY_DSN', '')
 
-## Mail setup
+# set path to enable
+LOG_FILE = os.environ.get('LOG_FILE', '/tmp/log')
+
+# Optional log level
+
+LOG_LEVEL = logging.DEBUG
+
+# Mail setup
 MAIL_SERVER = 'localhost'
 MAIL_USERNAME = None
 MAIL_PASSWORD = None
@@ -96,41 +114,46 @@ MAIL_PORT = 25
 MAIL_FAIL_SILENTLY = False
 MAIL_DEFAULT_SENDER = 'PyBossa Support <info@pybossa.com>'
 
-## Announcement messages
-## Use any combination of the next type of messages: root, user, and app owners
-## ANNOUNCEMENT = {'admin': 'Root Message', 'user': 'User Message', 'owner': 'Owner Message'}
+# Announcement messages
+# Use any combination of the next type of messages: root, user, and app owners
+# ANNOUNCEMENT = {'admin': 'Root Message', 'user': 'User Message', 'owner': 'Owner Message'}
 
-## Enforce Privacy Mode, by default is disabled
-## This config variable will disable all related user pages except for admins
-## Stats, top users, leaderboard, etc
+# Enforce Privacy Mode, by default is disabled
+# This config variable will disable all related user pages except for admins
+# Stats, top users, leaderboard, etc
 ENFORCE_PRIVACY = False
 
 
-## Cache setup. By default it is enabled
-## Redis Sentinel
+# Cache setup. By default it is enabled
+# Redis Sentinel
 # List of Sentinel servers (IP, port)
-REDIS_SENTINEL = [('localhost', 26379)]
-REDIS_MASTER = 'redis-master'
-REDIS_DB = 0
-REDIS_KEYPREFIX = 'pybossa_cache'
-REDIS_SOCKET_TIMEOUT = None
-REDIS_RETRY_ON_TIMEOUT = True
+# On .env, set as a comma separated list of IP:port
 
-## Allowed upload extensions
+REDIS_SENTINEL = [
+    tuple(url.split(':')) for url in os.environ.get('REDIS_SENTINEL', '172.25.0.6:26379').split(',')
+]
+print('REDIS_SENTINEL', REDIS_SENTINEL)
+REDIS_MASTER = os.environ.get('REDIS_MASTER', 'redis-master')
+REDIS_DB = os.environ.get('REDIS_DB', 0)
+REDIS_KEYPREFIX = os.environ.get('REDIS_KEYPREFIX', 'pybossa_cache')
+REDIS_SOCKET_TIMEOUT = os.environ.get('REDIS_SOCKET_TIMEOUT', None)
+REDIS_RETRY_ON_TIMEOUT = os.environ.get('REDIS_RETRY_ON_TIMEOUT', True)
+
+# Allowed upload extensions
 ALLOWED_EXTENSIONS = ['js', 'css', 'png', 'jpg', 'jpeg', 'gif', 'zip']
 
-## If you want to use the local uploader configure which folder
-UPLOAD_METHOD = 'local'
-UPLOAD_FOLDER = 'uploads'
+# If you want to use the local uploader configure which folder
+UPLOAD_METHOD = os.environ.get('UPLOAD_METHOD', 'local')
+UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER', 'uploads')
 
-## If you want to use Rackspace for uploads, configure it here
+# If you want to use Rackspace for uploads, configure it here
 # RACKSPACE_USERNAME = 'username'
 # RACKSPACE_API_KEY = 'apikey'
 # RACKSPACE_REGION = 'ORD'
 
-## Default number of users shown in the leaderboard
+# Default number of users shown in the leaderboard
 # LEADERBOARD = 20
-## Default shown presenters
+# Default shown presenters
 # PRESENTERS = ["basic", "image", "sound", "video", "map", "pdf"]
 # Default Google Docs spreadsheet template tasks URLs
 TEMPLATE_TASKS = {
@@ -141,17 +164,17 @@ TEMPLATE_TASKS = {
     'pdf': "https://docs.google.com/spreadsheet/ccc?key=0AsNlt0WgPAHwdEVVamc0R0hrcjlGdXRaUXlqRXlJMEE&usp=sharing"}
 
 # Expiration time for password protected project cookies
-PASSWD_COOKIE_TIMEOUT = 60 * 30
+PASSWD_COOKIE_TIMEOUT = os.environ.get('PASSWD_COOKIE_TIMEOUT', 60 * 30)
 
 # Expiration time for account confirmation / password recovery links
-ACCOUNT_LINK_EXPIRATION = 5 * 60 * 60
+ACCOUNT_LINK_EXPIRATION = os.environ.get('ACCOUNT_LINK_EXPIRATION', 5 * 60 * 60)
 
-## Ratelimit configuration
+# Ratelimit configuration
 # LIMIT = 300
 # PER = 15 * 60
 
 # Disable new account confirmation (via email)
-ACCOUNT_CONFIRMATION_DISABLED = True
+ACCOUNT_CONFIRMATION_DISABLED = os.environ.get('ACCOUNT_CONFIRMATION_DISABLED', True)
 
 # Mailchimp API key
 # MAILCHIMP_API_KEY = "your-key"
@@ -288,7 +311,7 @@ CRYPTOPAN_KEY = '32-char-str-for-AES-key-and-pad.'
 TTL_ZIP_SEC_FILES = 3
 
 # Instruct PYBOSSA to generate HTTP or HTTPS
-PREFERRED_URL_SCHEME='https'
+PREFERRED_URL_SCHEME = 'https'
 
 # Instruct PYBOSSA to generate absolute paths or not for avatars
 AVATAR_ABSOLUTE = True
@@ -300,3 +323,5 @@ USER_INACTIVE_DELETE = 6
 
 # Inactive users email SQL query
 INACTIVE_USERS_SQL_QUERY = """SELECT user_id FROM task_run WHERE user_id IS NOT NULL AND to_date(task_run.finish_time, 'YYYY-MM-DD\THH24:MI:SS.US') >= NOW() - '12 month'::INTERVAL AND to_date(task_run.finish_time, 'YYYY-MM-DD\THH24:MI:SS.US') < NOW() - '3 month'::INTERVAL GROUP BY user_id ORDER BY user_id;"""
+
+THEME = 'default'

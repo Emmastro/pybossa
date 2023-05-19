@@ -16,7 +16,7 @@ jobs:
       - image: s7anley/redis-sentinel-docker
         environment:
             MASTER: localhost:6379
-            MASTER_NAME: mymaster
+            MASTER_NAME: redis-master
     steps:
       - checkout
       - run:

@@ -29,8 +29,8 @@ class TestSentinel(Test):
         sentinel.init_app(self.flask_app)
         assert sentinel.connection is not None
         assert sentinel.connection
-        # We get the redis-client for mymaster
-        redis_client = sentinel.connection.master_for('mymaster')
+        # We get the redis-client for redis-master
+        redis_client = sentinel.connection.master_for('redis-master')
         redis_client.set('foo', 'bar')
         assert redis_client.get('foo') == b'bar'
         assert sentinel.master.get('foo') == b'bar'

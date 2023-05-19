@@ -33,14 +33,14 @@ dat/GeoIP.dat
 pybossa/themes/pybossa-default-theme/
 dist/*
 pybossa/themes/crowdcrafting-theme/
-pybossa/translations
+#pybossa/translations
 pybossa/plugins/
 !pybossa/plugins/__init__.py
 test/test_cache.py
 cover/*
 coverage.xml
 htmlcov/*
-pybossa/themes/*
+#pybossa/themes/*
 .vscode/
 *.bak
 *.orig
@@ -57,9 +57,6 @@ venv3
 
 .env
 
-
 # Docker volumes
 pgadmin-data/
 postgres-data/
-
-volume/

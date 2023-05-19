@@ -1,0 +1,78 @@
+version: "1.0"
+services:
+  postgres:
+    image: postgres:10.5
+    restart: always
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    volumes:
+      - ./volume/postgres-data:/var/lib/postgresql/data
+      - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+    
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "80:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    volumes:
+      - ./volume/pgadmin-data:/var/lib/pgadmin
+    links:
+      - postgres:postgres
+    depends_on:
+      - postgres
+
+  redis-ui:
+    image: patrikx3/p3x-redis-ui:latest
+    ports:
+      - 7843:7843
+    depends_on:
+      - redis-master
+    volumes:
+      - ./p3x-redis-ui-settings:/settings
+  
+  redis-master:
+    image: redis:7.0.5
+    container_name: redis-master
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./volume/redis-data:/data
+
+  redis-slave:
+    image: redis:7.0.5
+    command: redis-server --slaveof redis-master 6379
+    links:
+      - redis-master
+    volumes:
+      - "./volume/data-slave:/data"
+
+  redis-sentinel:
+    container_name: redis-sentinel
+    build:
+      context: ./contrib/redis
+    links:
+      - redis-master
+
+  web:
+    build: .
+    environment:
+      - PYTHONUNBUFFERED=1
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis-master
+      - redis-sentinel

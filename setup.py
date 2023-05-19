@@ -26,7 +26,7 @@ requirements = [
     "entrypoints==0.2.3",
     "factory-boy==2.4.1",
     "Faker==1.0.1",
-    "feedparser==5.2.1",
+    "feedparser==6.0.10",
     "Flask==1.1.2",
     "Flask-Assets==0.12",
     "Flask-Babel>=0.9",
@@ -55,11 +55,11 @@ requirements = [
     "itsdangerous==1.1.0",
     "jeepney==0.4",
     "Jinja2==2.11.2",
-    "jsmin==2.2.2",
+    "jsmin==3.0.1",
     "keyring==17.1.1",
     "keystoneauth1==3.11.2",
     "libsass==0.16.1",
-    "lxml==4.6.2",
+    "lxml==4.9.2",
     "Mako==1.0.7",
     "Markdown==2.6.11",
     "MarkupSafe==1.1.0",
@@ -121,7 +121,7 @@ requirements = [
     "six==1.12.0",
     "soupsieve==1.6.1",
     "speaklater==1.3",
-    "SQLAlchemy>=1.3.0",
+    "SQLAlchemy<2.0.0", # Versions from 2.0 have issues: https://stackoverflow.com/questions/75275563/attributeerror-module-sqlalchemy-has-no-attribute-all
     "sqlalchemy-json==0.4.0",
     "stevedore>=1.30.0",
     "termstyle==0.1.11",
@@ -138,6 +138,7 @@ requirements = [
     "WTForms-Components==0.10.5",
     "yacryptopan==1.0.0",
     "email_validator==1.1.1",
+    "python-dotenv>=0.21.0",
 ]
 
 setup(

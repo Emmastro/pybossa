@@ -17,8 +17,36 @@
 # along with PYBOSSA. If not, see <http://www.gnu.org/licenses/>.
 from pybossa.core import create_app
 
+from cli import setup_alembic_config
+
+def db_create(app):
+    with app.app_context():
+        from pybossa.core import db
+        from pybossa.model.category import Category
+    
+        db.create_all()
+        # then, load the Alembic configuration and generate the
+        # version table, "stamping" it with the most recent rev:
+        #setup_alembic_config()
+        # finally, add a minimum set of categories: Volunteer Thinking, Volunteer Sensing, Published and Draft
+        categories = []
+        categories.append(Category(name="Thinking",
+                                   short_name='thinking',
+                                   description='Volunteer Thinking projects'))
+        categories.append(Category(name="Volunteer Sensing",
+                                   short_name='sensing',
+                                   description='Volunteer Sensing projects'))
+        db.session.add_all(categories)
+        db.session.commit()
+
 if __name__ == "__main__":  # pragma: no cover
+    print("Running PyBossa...")
+    
     app = create_app()
+    try:
+        db_create(app)
+    except:
+        print("dtb already exists")
     # logging.basicConfig(level=logging.NOTSET)
     app.run(host=app.config['HOST'], port=app.config['PORT'],
             debug=app.config.get('DEBUG', True))
