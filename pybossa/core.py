@@ -134,7 +134,6 @@ def setup_theme(app):
     """Configure theme for PYBOSSA app."""
     theme = app.config['THEME']
     app.template_folder = os.path.join('themes', theme, 'templates')
-    print("tempte ???", app.template_folder)
     app.static_folder = os.path.join('themes', theme, 'static')
 
 

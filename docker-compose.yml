@@ -3,7 +3,6 @@ services:
   postgres:
     image: postgres:10.5
     restart: always
-    container_name: postgres
     ports:
       - "5432:5432"
     environment:
@@ -27,8 +26,6 @@ services:
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     volumes:
       - ./volume/pgadmin-data:/var/lib/pgadmin
-    links:
-      - postgres:postgres
     depends_on:
       - postgres
 
@@ -43,7 +40,6 @@ services:
   
   redis-master:
     image: redis:7.0.5
-    container_name: redis-master
     ports:
       - "6379:6379"
     volumes:
@@ -52,18 +48,23 @@ services:
   redis-slave:
     image: redis:7.0.5
     command: redis-server --slaveof redis-master 6379
-    links:
-      - redis-master
     volumes:
       - "./volume/data-slave:/data"
-
-  redis-sentinel:
-    container_name: redis-sentinel
-    build:
-      context: ./contrib/redis
-    links:
+    depends_on:
       - redis-master
 
+  redis-sentinel:
+    build:
+      context: ./contrib/redis
+    depends_on:
+      - redis-master
+      - redis-slave
+    environment:
+      - REDIS_HOST=redis-master
+    restart: unless-stopped
+    ports:
+      - "26379:26379"
+  
   web:
     build: .
     environment:
@@ -75,4 +76,5 @@ services:
     depends_on:
       - postgres
       - redis-master
+      - redis-slave
       - redis-sentinel

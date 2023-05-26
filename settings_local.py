@@ -129,10 +129,8 @@ ENFORCE_PRIVACY = False
 # List of Sentinel servers (IP, port)
 # On .env, set as a comma separated list of IP:port
 
-REDIS_SENTINEL = [
-    tuple(url.split(':')) for url in os.environ.get('REDIS_SENTINEL', '172.25.0.6:26379').split(',')
-]
-print('REDIS_SENTINEL', REDIS_SENTINEL)
+
+REDIS_SENTINEL = [('redis-sentinel', 26379)]
 REDIS_MASTER = os.environ.get('REDIS_MASTER', 'redis-master')
 REDIS_DB = os.environ.get('REDIS_DB', 0)
 REDIS_KEYPREFIX = os.environ.get('REDIS_KEYPREFIX', 'pybossa_cache')
